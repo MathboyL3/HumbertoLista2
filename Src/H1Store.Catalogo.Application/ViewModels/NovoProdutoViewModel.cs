@@ -16,5 +16,6 @@ namespace H1Store.Catalogo.Application.ViewModels
 		public DateTime DataCadastro { get; set; }
 		public string Imagem { get; set; }
 		public int QuantidadeEstoque { get; set; }
-	}
+        public int QuantidadeEstoqueMinimo { get; set; }
+    }
 }

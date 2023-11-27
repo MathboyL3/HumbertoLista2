@@ -19,7 +19,7 @@ namespace H1Store.Catalogo.API.Controllers
 
 		[HttpPost]
 		[Route("Adicionar")]
-		public async Task<IActionResult> Post(NovoFornecedorViewModel novoFornecedorViewModel)
+		public async Task<IActionResult> Post([FromBody]NovoFornecedorViewModel novoFornecedorViewModel)
 		{
 		
 			await _fornecedorService.Adicionar(novoFornecedorViewModel);
@@ -46,36 +46,41 @@ namespace H1Store.Catalogo.API.Controllers
         [HttpPut]
         [Route("Atualizar/{cnpj}")]
 
-        public async Task<IActionResult> Atualizar([FromBody] NovoFornecedorViewModel produto)
+        public async Task<IActionResult> Atualizar(string cnpj, [FromBody] NovoFornecedorViewModel produto)
         {
-            _fornecedorService.Atualizar(produto);
+            _fornecedorService.Atualizar(cnpj, produto);
 
-            return Ok("Produto modificado com sucesso!");
+            return Ok("Fornecedor modificado com sucesso!");
         }
 
         [HttpPut]
-        [Route("Desativar/{id}")]
+        [Route("Desativar/{cnpj}")]
         public async Task<IActionResult> Desativar(string cnpj)
         {
             await _fornecedorService.Desativar(cnpj);
 
-            return Ok("Produto desativado com sucesso");
+            return Ok("Fornecedor desativado com sucesso");
         }
 
         [HttpPut]
-        [Route("Ativar/{id}")]
+        [Route("Ativar/{cnpj}")]
         public async Task<IActionResult> Ativar(string cnpj)
         {
             await _fornecedorService.Ativar(cnpj);
 
-            return Ok("Produto ativado com sucesso");
+            return Ok("Fornecedor ativado com sucesso");
         }
 
         [HttpGet]
         [Route("ObterPorNome/{nome}")]
         public async Task<IActionResult> ObterPorNome(string nome)
         {
-            return Ok(await _fornecedorService.ObterPorNome(nome));
+			var fornecedor = await _fornecedorService.ObterPorNome(nome);
+
+			if (fornecedor == null)
+				return BadRequest($@"Nenhum fornecedor com o nome ""{nome}"" foi encontrado.");
+
+            return Ok(fornecedor);
         }
 
     }

@@ -29,26 +29,12 @@ namespace H1Store.Catalogo.Data.Repository
 			await _categoriaRepository.InsertOneAsync(_mapper.Map<CategoriaCollection>(categoria));
 		}
 
-        public async Task Ativar(Categoria categoria)
-        {
-            var buscaCategoria = await _categoriaRepository.FindOneAsync(filter => filter.CodigoId == categoria.CodigoId);
-            buscaCategoria.Ativo = true;
-            await _categoriaRepository.ReplaceOneAsync(buscaCategoria);
-        }
-
         public async void Atualizar(Categoria categoria)
 		{
             var buscaCategoria = await _categoriaRepository.FindOneAsync(filter => filter.CodigoId == categoria.CodigoId);
             var cat = _mapper.Map<CategoriaCollection>(categoria);
             cat.Id = buscaCategoria.Id;
             await _categoriaRepository.ReplaceOneAsync(cat);
-        }
-
-		public async Task Desativar(Categoria categoria)
-		{
-            var buscaCategoria = await _categoriaRepository.FindOneAsync(filter => filter.CodigoId == categoria.CodigoId);
-            buscaCategoria.Ativo = false;
-            await _categoriaRepository.ReplaceOneAsync(buscaCategoria);
         }
 
 		public async Task<Categoria> ObterPorId(Guid id)

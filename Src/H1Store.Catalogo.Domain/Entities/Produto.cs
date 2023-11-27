@@ -13,7 +13,7 @@ namespace H1Store.Catalogo.Domain.Entities
 
 		#region 1 - Contrutores
 
-		public Produto( string nome, string descricao, bool ativo, decimal valor, DateTime dataCadastro, string imagem, int quantidadeEstoque)
+		public Produto( string nome, string descricao, bool ativo, decimal valor, DateTime dataCadastro, string imagem, int quantidadeEstoque, int quantidadeEstoqueMinimo)
 		{
 			Nome = nome;
 			Descricao = descricao;
@@ -22,9 +22,10 @@ namespace H1Store.Catalogo.Domain.Entities
 			DataCadastro = dataCadastro;
 			Imagem = imagem;
 			QuantidadeEstoque = quantidadeEstoque;
-		}
+			QuantidadeEstoqueMinimo = quantidadeEstoqueMinimo;
+        }
 
-		public Produto(Guid codigoId, string nome, string descricao, bool ativo, decimal valor, DateTime dataCadastro, string imagem, int quantidadeEstoque)
+        public Produto(Guid codigoId, string nome, string descricao, bool ativo, decimal valor, DateTime dataCadastro, string imagem, int quantidadeEstoque, int quantidadeEstoqueMinimo)
 		{
 			CodigoId = codigoId;
 			Nome = nome;
@@ -34,6 +35,7 @@ namespace H1Store.Catalogo.Domain.Entities
 			DataCadastro = dataCadastro;
 			Imagem = imagem;
 			QuantidadeEstoque = quantidadeEstoque;
+			QuantidadeEstoqueMinimo = quantidadeEstoqueMinimo;
 		}
 
 
@@ -72,6 +74,7 @@ namespace H1Store.Catalogo.Domain.Entities
 			QuantidadeEstoque += quantidade;
 		}
 
+		public void AlterarValor(decimal valor) => Valor = valor;
 		public bool PossuiEstoque(int quantidade) => QuantidadeEstoque >= quantidade;
 
 		public bool AlertaEstoque() => QuantidadeEstoqueMinimo > QuantidadeEstoque;

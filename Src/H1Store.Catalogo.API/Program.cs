@@ -13,6 +13,8 @@ using H1Store.Catalogo.Infra.EmailService;
 using Microsoft.Extensions.Configuration;
 using H1Store.Catalogo.Infra.Autenticacao.Models;
 using H1Store.Catalogo.Infra.Autenticacao;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using H1Store.Catalogo.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,12 @@ builder.Services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>)
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 
+builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
+builder.Services.AddScoped<IFornecedorService, FornecedorService>();
+
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+
 builder.Services.Configure<Token>(
 	builder.Configuration.GetSection("token"));
 
@@ -49,7 +57,15 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.Configure<EmailConfig>(
 	builder.Configuration.GetSection("EmailConfig"));
 
+builder.Services.Configure<EmailMasterReport>(
+    builder.Configuration.GetSection("ReportEmail"));
 
+builder.Services.AddCors(x => x.AddPolicy("All", new CorsPolicyBuilder()
+	.AllowAnyHeader()
+	.AllowAnyMethod()
+	.AllowAnyOrigin()
+	.Build()
+	));
 
 var app = builder.Build();
 
@@ -59,6 +75,8 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
+app.UseCors("All");
 
 app.UseHttpsRedirection();
 

@@ -15,10 +15,10 @@ namespace H1Store.Catalogo.Application.AutoMapper
 		{
 
 			CreateMap<ProdutoViewModel, Produto>()
-			   .ConstructUsing(q => new Produto(q.Nome,q.Descricao,q.Ativo,q.Valor,q.DataCadastro,q.Imagem,q.QuantidadeEstoque));
+			   .ConstructUsing(q => new Produto(q.Nome,q.Descricao,q.Ativo,q.Valor,q.DataCadastro,q.Imagem,q.QuantidadeEstoque, q.QuantidadeEstoqueMinimo));
 
 			CreateMap<NovoProdutoViewModel, Produto>()
-			   .ConstructUsing(q => new Produto(q.Nome, q.Descricao, q.Ativo, q.Valor, q.DataCadastro, q.Imagem, q.QuantidadeEstoque));
+			   .ConstructUsing(q => new Produto(q.Nome, q.Descricao, q.Ativo, q.Valor, q.DataCadastro, q.Imagem, q.QuantidadeEstoque, q.QuantidadeEstoqueMinimo));
 
 			CreateMap<FornecedorViewModel, Fornecedor>()
 				.ConstructUsing(f => new Fornecedor(f.Nome, f.Cnpj, f.RazaoSocial, f.DataCadastro, f.Ativo));
@@ -26,9 +26,13 @@ namespace H1Store.Catalogo.Application.AutoMapper
 			CreateMap<NovoFornecedorViewModel, Fornecedor>()
 				.ConstructUsing(f => new Fornecedor(f.Nome,f.Cnpj, f.RazaoSocial, DateTime.Now, true));
 
+            CreateMap<CategoriaViewModel, Categoria>()
+                .ConstructUsing(f => new Categoria(f.Descricao, f.Ativo));
 
-			
+            CreateMap<NovaCategoriaViewModel, Categoria>()
+                .ConstructUsing(f => new Categoria(f.Descricao, f.Ativo));
 
-		}
+
+        }
 	}
 }

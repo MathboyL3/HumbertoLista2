@@ -40,24 +40,12 @@ namespace H1Store.Catalogo.Data.Repository
             await _produtoRepository.ReplaceOneAsync(prod);
         }
 
-		public async Task Desativar(Produto produto)
+		public async Task<IEnumerable<Produto>> ObterPorCategoria(Guid codigo)
 		{
+            var produtoList = _produtoRepository.FilterBy(filter => filter.CategoriaId.Equals(codigo));
 
-			var buscaProduto = _produtoRepository.FilterBy(filter => filter.CodigoId == produto.CodigoId);
-
-			if (buscaProduto == null) throw new ApplicationException("Não é possível desativar um produto que não existe");
-
-			var produtoCollection = _mapper.Map<ProdutoCollection>(produto);
-
-			produtoCollection.Id = buscaProduto.FirstOrDefault().Id;
-			
-			await _produtoRepository.ReplaceOneAsync(produtoCollection);
-		}
-
-		public Task<IEnumerable<Produto>> ObterPorCategoria(int codigo)
-		{
-			throw new NotImplementedException();
-		}
+            return _mapper.Map<IEnumerable<Produto>>(produtoList);
+        }
 
 		public async Task<Produto> ObterPorId(Guid id)
 		{
@@ -77,20 +65,6 @@ namespace H1Store.Catalogo.Data.Repository
 
 		}
 
-        public async Task AlterarPreco(Produto produto, decimal newPreco)
-        {
-            var busca_produto = await _produtoRepository.FindOneAsync(prod => prod.CodigoId == produto.CodigoId);
-            busca_produto.Valor = newPreco;
-            await _produtoRepository.ReplaceOneAsync(busca_produto);
-        }
-
-        public async Task AtualizarEstoque(Produto produto)
-        {
-            var busca_produto = await _produtoRepository.FindOneAsync(prod => prod.CodigoId == produto.CodigoId);
-            busca_produto.QuantidadeEstoque = produto.QuantidadeEstoque;
-            await _produtoRepository.ReplaceOneAsync(busca_produto);
-        }
-
         public async Task<Produto> ObterPorNome(string nome)
         {
 			var buscaProduto = await _produtoRepository.FindOneAsync(filter => filter.Nome.Equals(nome));
@@ -100,19 +74,6 @@ namespace H1Store.Catalogo.Data.Repository
             return produto;
         }
 
-        public async Task Ativar(Produto produto)
-        {
-            var buscaProduto = _produtoRepository.FilterBy(filter => filter.CodigoId == produto.CodigoId);
-
-            if (buscaProduto == null) throw new ApplicationException("Não é possível desativar um produto que não existe");
-
-            var produtoCollection = _mapper.Map<ProdutoCollection>(produto);
-
-            produtoCollection.Id = buscaProduto.FirstOrDefault().Id;
-			produtoCollection.Ativo = true;
-
-            await _produtoRepository.ReplaceOneAsync(produtoCollection);
-        }
         #endregion
 
     }

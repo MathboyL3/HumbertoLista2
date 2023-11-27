@@ -7,6 +7,7 @@ using H1Store.Catalogo.Infra.EmailService;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,13 +20,13 @@ namespace H1Store.Catalogo.Application.Services
 		private readonly IProdutoRepository _produtoRepository;
 		private IMapper _mapper;
 		private EmailConfig _emailConfig;
-
-		public ProdutoService(IProdutoRepository produtoRepository, IMapper mapper, IOptions<EmailConfig> emailConfig)
+        private EmailMasterReport _email_to_report;
+        public ProdutoService(IProdutoRepository produtoRepository, IMapper mapper, IOptions<EmailConfig> emailConfig, IOptions<EmailMasterReport> email_to_report)
 		{
 			_produtoRepository = produtoRepository;
 			_mapper = mapper;
 			_emailConfig = emailConfig.Value;
-
+            _email_to_report = email_to_report.Value;
         }
 		#endregion
 
@@ -33,11 +34,7 @@ namespace H1Store.Catalogo.Application.Services
 		public async Task Adicionar(NovoProdutoViewModel novoProdutoViewModel)
 		{
 			var novoProduto = _mapper.Map<Produto>(novoProdutoViewModel);
-
-			Produto p = new Produto(novoProdutoViewModel.Descricao, novoProdutoViewModel.Descricao, novoProdutoViewModel.Ativo, novoProdutoViewModel.Valor, novoProdutoViewModel.DataCadastro, novoProdutoViewModel.Imagem, novoProdutoViewModel.QuantidadeEstoque);
-
 			await _produtoRepository.Adicionar(novoProduto);
-
 		}
 
         public async Task AlterarPreco(Guid id, decimal newPreco)
@@ -47,7 +44,9 @@ namespace H1Store.Catalogo.Application.Services
             if (produto == null) throw new ArgumentNullException("Produto não existente!");
             if (newPreco <= 0) throw new ArgumentNullException("O preço não não pode ser <= 0");
 
-            await _produtoRepository.AlterarPreco(produto, newPreco);
+            produto.AlterarValor(newPreco);
+
+            _produtoRepository.Atualizar(produto);
         }
         public async Task AtualizarEstoque(Guid id, int quantidade)
         {
@@ -59,34 +58,29 @@ namespace H1Store.Catalogo.Application.Services
 
 			if (buscaProduto.AlertaEstoque())
 			{
-				string corpo = $"Olá Comprador(a), o produto {buscaProduto.Descricao} está abaixo do estoque mínimo {buscaProduto.QuantidadeEstoqueMinimo} novo pedido de compra.";
-                Email.Enviar("Estoque abaixo do mínimo", corpo, _emailConfig.Usuario, _emailConfig);
+				string corpo = $@"Olá Comprador(a), o produto ""{buscaProduto.Descricao}"" está abaixo do estoque mínimo ({buscaProduto.QuantidadeEstoqueMinimo}), novo pedido de compra.";
+                Email.Enviar("Estoque abaixo do mínimo", corpo, _email_to_report.EmailToReport, _emailConfig);
 			}
 			
-            await _produtoRepository.AtualizarEstoque(buscaProduto);
-
+            _produtoRepository.Atualizar(buscaProduto);
         }
 
-        public void Atualizar(ProdutoViewModel produto)
+        public void Atualizar(Guid id, NovoProdutoViewModel produto)
 		{
 			var _produto = _mapper.Map<Produto>(produto);
-			_produtoRepository.Atualizar(_produto);
+            _produto.CodigoId = id;
+            _produtoRepository.Atualizar(_produto);
 
         }
 
         public async Task Desativar(Guid id)
 		{
 			var buscaProduto = await _produtoRepository.ObterPorId(id);
-
-			if(buscaProduto == null)  throw new ApplicationException("Não é possível desativar um produto que não existe!");
-			
 			buscaProduto.Desativar();
-
-			await _produtoRepository.Desativar(buscaProduto);
-
+			_produtoRepository.Atualizar(buscaProduto);
 		}
 
-		public async Task<IEnumerable<ProdutoViewModel>> ObterPorCategoria(int codigo)
+		public async Task<IEnumerable<ProdutoViewModel>> ObterPorCategoria(Guid codigo)
 		{
 			return _mapper.Map<IEnumerable<ProdutoViewModel>>(await _produtoRepository.ObterPorCategoria(codigo));
 		}
@@ -106,16 +100,11 @@ namespace H1Store.Catalogo.Application.Services
 			return _mapper.Map<IEnumerable<ProdutoViewModel>>(_produtoRepository.ObterTodos());
 		}
 
-        public async Task Desativar(ProdutoViewModel produto)
+        public async Task Ativar(Guid id)
         {
-            Produto novoProduto = _mapper.Map<Produto>(produto);
-            await _produtoRepository.Ativar(novoProduto);
-        }
-
-        public async Task Ativar(ProdutoViewModel produto)
-        {
-            Produto novoProduto = _mapper.Map<Produto>(produto);
-            await _produtoRepository.Ativar(novoProduto);
+            var buscaProduto = await _produtoRepository.ObterPorId(id);
+            buscaProduto.Ativar();
+            _produtoRepository.Atualizar(buscaProduto);
         }
         #endregion
     }

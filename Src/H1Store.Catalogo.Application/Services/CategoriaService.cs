@@ -38,20 +38,23 @@ namespace H1Store.Catalogo.Application.Services
         public async Task Ativar(Guid id)
         {
             var novaCategoria = _mapper.Map<Categoria>(await _categoriaRepository.ObterPorId(id));
-            await _categoriaRepository.Ativar(novaCategoria);
+			novaCategoria.Ativar();
+            _categoriaRepository.Atualizar(novaCategoria);
         }
 
-        public void Atualizar(NovaCategoriaViewModel categoriaViewModel)
+        public void Atualizar(Guid id, NovaCategoriaViewModel categoriaViewModel)
 		{
             var novaCategoria = _mapper.Map<Categoria>(categoriaViewModel);
-			_categoriaRepository.Atualizar(novaCategoria);
+            novaCategoria.CodigoId = id;
+            _categoriaRepository.Atualizar(novaCategoria);
 
         }
 
         public async Task Desativar(Guid id)
         {
             var novaCategoria = _mapper.Map<Categoria>(await _categoriaRepository.ObterPorId(id));
-            await _categoriaRepository.Ativar(novaCategoria);
+            novaCategoria.Desativar();
+            _categoriaRepository.Atualizar(novaCategoria);
         }
 
         public async Task<CategoriaViewModel> ObterPorId(Guid id)

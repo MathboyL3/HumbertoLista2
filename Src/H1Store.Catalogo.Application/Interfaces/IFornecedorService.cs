@@ -13,11 +13,11 @@ namespace H1Store.Catalogo.Application.Interfaces
 		public Task Adicionar(NovoFornecedorViewModel novoFornecedorViewModel);
 		//public Task Atualizar(Fornecedor fornecedor);
 		public Task Remover(FornecedorViewModel fornecedor);
-		public Task<FornecedorViewModel> ObterPorId(int id);
+		public Task<FornecedorViewModel> ObterPorId(Guid id);
 		public Task<FornecedorViewModel> ObterPorCnpj(string cnpj);
 		public Task<IEnumerable<FornecedorViewModel>> ObterTodos();
         Task<FornecedorViewModel> ObterPorNome(string nome);
-        void Atualizar(NovoFornecedorViewModel model);
+        void Atualizar(string cnpj, NovoFornecedorViewModel model);
         Task Desativar(string cnpj);
         Task Ativar(string cnpj);
     }

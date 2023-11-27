@@ -15,7 +15,7 @@ namespace H1Store.Catalogo.Data.AutoMapper
 		{
 
 			CreateMap<ProdutoCollection, Produto>()
-			   .ConstructUsing(q => new Produto(q.CodigoId, q.Nome, q.Descricao, q.Ativo, q.Valor, q.DataCadastro, q.Imagem, q.QuantidadeEstoque));
+			   .ConstructUsing(q => new Produto(q.CodigoId, q.Nome, q.Descricao, q.Ativo, q.Valor, q.DataCadastro, q.Imagem, q.QuantidadeEstoque, q.QuantidadeEstoqueMinimo));
 
 			CreateMap<CategoriaCollection, Categoria>()
 			   .ConstructUsing(q => new Categoria(q.CodigoId, q.Descricao, q.Ativo));

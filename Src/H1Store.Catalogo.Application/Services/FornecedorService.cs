@@ -27,9 +27,9 @@ namespace H1Store.Catalogo.Application.Services
 
 			//regra de negocio verificar aqui se existe cpnj ja cadastrado
 			//senao existir chama o repositoo
-			//se existir da erro que ja exist fornecedor cadastrado
+			//se existir da erro que ja existe fornecedor cadastrado
 			Fornecedor fornecedor = await _fornecedorRepository.ObterPorCnpj(novoFornecedorViewModel.Cnpj);
-
+			
 			if (fornecedor != null)
 			{
 				throw new
@@ -42,21 +42,24 @@ namespace H1Store.Catalogo.Application.Services
 
         public async Task Ativar(string cnpj)
         {
-            var novaFornecedor = _Mapper.Map<Fornecedor>(await _fornecedorRepository.ObterPorCnpj(cnpj));
-            await _fornecedorRepository.Ativar(novaFornecedor);
+            var novoFornecedor = _Mapper.Map<Fornecedor>(await _fornecedorRepository.ObterPorCnpj(cnpj));
+			novoFornecedor.Ativar();
+            await _fornecedorRepository.Atualizar(novoFornecedor);
 
         }
 
-        public void Atualizar(NovoFornecedorViewModel fornecedor)
+
+        public void Atualizar(string cnpj, NovoFornecedorViewModel fornecedor)
         {
-            Fornecedor novoFornecedor = _Mapper.Map<Fornecedor>(fornecedor);
+            var novoFornecedor = _Mapper.Map<Fornecedor>(fornecedor);
             _fornecedorRepository.Atualizar(novoFornecedor);
         }
 
         public async Task Desativar(string cnpj)
         {
-            var novaFornecedor = _Mapper.Map<Fornecedor>(await _fornecedorRepository.ObterPorCnpj(cnpj));
-            await _fornecedorRepository.Ativar(novaFornecedor);
+            var novoFornecedor = _Mapper.Map<Fornecedor>(await _fornecedorRepository.ObterPorCnpj(cnpj));
+			novoFornecedor.Desativar();
+            await _fornecedorRepository.Atualizar(novoFornecedor);
         }
 
         public async Task<FornecedorViewModel> ObterPorCnpj(string cnpj)
@@ -64,7 +67,7 @@ namespace H1Store.Catalogo.Application.Services
 			return _Mapper.Map<FornecedorViewModel>(await _fornecedorRepository.ObterPorCnpj(cnpj));
 		}
 
-		public async Task<FornecedorViewModel> ObterPorId(int id)
+		public async Task<FornecedorViewModel> ObterPorId(Guid id)
 		{
             return _Mapper.Map<FornecedorViewModel>(await _fornecedorRepository.ObterPorId(id));
         }

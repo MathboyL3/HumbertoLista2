@@ -12,8 +12,6 @@ namespace H1Store.Catalogo.Domain.Interfaces
 		IEnumerable<Categoria> ObterTodas();
 		Task<Categoria> ObterPorId(Guid id);
 		Task Adicionar(Categoria categoria);
-		Task Desativar(Categoria categoria);
-		Task Ativar(Categoria categoria);
         void Atualizar(Categoria categoria);
 	}
 }

@@ -11,13 +11,9 @@ namespace H1Store.Catalogo.Domain.Interfaces
 	{
 		IEnumerable<Produto> ObterTodos();
 		Task<Produto> ObterPorId(Guid id);
-		Task<IEnumerable<Produto>> ObterPorCategoria(int codigo);
+		Task<IEnumerable<Produto>> ObterPorCategoria(Guid codigo);
         Task<Produto> ObterPorNome(string nome);
         Task Adicionar(Produto produto);
-		Task Desativar(Produto produto);
-		Task Ativar(Produto produto);
         void Atualizar(Produto produto);
-        Task AlterarPreco(Produto produto, decimal newPreco);
-        Task AtualizarEstoque(Produto produto);
     }
 }

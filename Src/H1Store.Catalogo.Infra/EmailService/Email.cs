@@ -18,7 +18,7 @@ namespace H1Store.Catalogo.Infra.EmailService
 				Credentials = new NetworkCredential(emailConfig.Usuario, emailConfig.Senha),
 				EnableSsl = true
 			};
-			client.Send("no-reply@example.com", destinatario, assunto, corpoemail);
+			client.Send("suportmedmax@gmail.com", destinatario, assunto, corpoemail);
 		}
 	}
 }

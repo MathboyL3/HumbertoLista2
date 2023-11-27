@@ -12,11 +12,9 @@ namespace H1Store.Catalogo.Domain.Interfaces
 		public Task Adicionar(Fornecedor fornecedor);
 		public Task Atualizar(Fornecedor fornecedor);
 		public Task Remover(Fornecedor fornecedor);
-		public Task<Fornecedor> ObterPorId(int id);
+		public Task<Fornecedor> ObterPorId(Guid id);
 		public Task<Fornecedor> ObterPorCnpj(string cnpj);
 		public Task<IEnumerable<Fornecedor>> ObterTodos();
         Task<Fornecedor> ObterPorNome(string nome);
-        Task Desativar(Fornecedor fornecedor);
-        Task Ativar(Fornecedor fornecedor);
     }
 }

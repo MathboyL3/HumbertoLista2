@@ -31,13 +31,6 @@ namespace H1Store.Catalogo.Data.Repository
 			await _fornecedorRepository.InsertOneAsync(novoFornecedorCollection);
 		}
 
-        public async Task Ativar(Fornecedor fornecedor)
-        {
-            var buscaFornecedor = await _fornecedorRepository.FindOneAsync(filter => filter.Cnpj.Equals(fornecedor.Cnpj));
-            buscaFornecedor.Ativo = true;
-            await _fornecedorRepository.ReplaceOneAsync(buscaFornecedor);
-        }
-
         public async Task Atualizar(Fornecedor fornecedor)
 		{
             var buscaFornecedor = await _fornecedorRepository.FindOneAsync(filter => filter.Cnpj.Equals(fornecedor.Cnpj));
@@ -46,32 +39,25 @@ namespace H1Store.Catalogo.Data.Repository
             await _fornecedorRepository.ReplaceOneAsync(_fornecedor);
         }
 
-        public async Task Desativar(Fornecedor fornecedor)
-        {
-            var buscaFornecedor = await _fornecedorRepository.FindOneAsync(filter => filter.Cnpj.Equals(fornecedor.Cnpj));
-            buscaFornecedor.Ativo = false;
-            await _fornecedorRepository.ReplaceOneAsync(buscaFornecedor);
-        }
-
         public async Task<Fornecedor> ObterPorCnpj(string cnpj)
 		{
 			//var resultadoBuscaCnpj =  _fornecedorRepository.FilterBy(filtro => filtro.Cnpj == cnpj)
 			//	.FirstOrDefault();
 			//return _mapper.Map<Fornecedor>(resultadoBuscaCnpj);
 
-			var resultadoBuscaCnpj2 = _fornecedorRepository.FindOneAsync(filtro => filtro.Cnpj.Equals(cnpj));
+			var resultadoBuscaCnpj2 = await _fornecedorRepository.FindOneAsync(filtro => filtro.Cnpj.Equals(cnpj));
 			return _mapper.Map<Fornecedor>(resultadoBuscaCnpj2);
 
 		}
 
-		public async Task<Fornecedor> ObterPorId(int id)
+		public async Task<Fornecedor> ObterPorId(Guid id)
 		{
             throw new NotImplementedException();
         }
 
         public async Task<Fornecedor> ObterPorNome(string nome)
         {
-            var resultadoBuscaCnpj2 = _fornecedorRepository.FindOneAsync(filtro => filtro.Nome.Equals(nome));
+            var resultadoBuscaCnpj2 = await _fornecedorRepository.FindOneAsync(filtro => filtro.Nome.Equals(nome, StringComparison.OrdinalIgnoreCase));
             return _mapper.Map<Fornecedor>(resultadoBuscaCnpj2);
         }
 

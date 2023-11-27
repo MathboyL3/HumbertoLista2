@@ -14,7 +14,7 @@ namespace H1Store.Catalogo.Application.Interfaces
         Task<CategoriaViewModel> ObterPorId(Guid id);
 
 		Task Adicionar(NovaCategoriaViewModel categoriaViewModel);
-		void Atualizar(NovaCategoriaViewModel categoriaViewModel);
+		void Atualizar(Guid id, NovaCategoriaViewModel categoriaViewModel);
         Task Desativar(Guid id);
         Task Ativar(Guid id);
     }
